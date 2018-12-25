@@ -68,9 +68,36 @@ void setup(){    //color set up
 
 
 
-
+  Calibrate();
 
 }
+
+void TimedCCW(int);
+void MeasureRGB();
+
+void Calibrate()
+{
+  GrabberClose();
+  GrabberOpen();
+  GrabberClose();
+  GrabberOpen();
+  GrabberClose();
+  
+  TimedCCW(1000);
+  int done = 0;
+  while(!done)
+  {
+    MeasureRGB();
+    if(R > G + 50 && R > B + 50)
+    {
+      break;
+    }
+
+    TimedCCW(10);
+  }
+}
+
+
 void loop(){
  retfrompos2();  //This code will turn BASE  clockwise for 2 sec to reach START point from Pos2 ONLY
 //dipper goes DOWN here
@@ -114,6 +141,69 @@ armup();
   
   delay(2000);
 }
+
+void StartCCW()
+{
+  digitalWrite(motorPin1, LOW);
+  digitalWrite(motorPin2, HIGH);
+  Serial.println("CCW");
+}
+
+void StartCW()
+{
+  digitalWrite(motorPin1, HIGH);
+  digitalWrite(motorPin2, LOW);
+}
+
+void Stop()
+{
+  digitalWrite(motorPin1, LOW);
+  digitalWrite(motorPin2, LOW);
+}
+
+void TimedCCW(int z)
+{
+  StartCCW();
+  delay(z);
+  Stop();
+}
+
+void TimedCW(int z)
+{
+  StartCW();
+  delay(z);
+  Stop();
+}
+
+void MeasureRGB()
+{
+   R=0;G=0;B=0;
+   int i = 0;
+ while(i<20){color();//Serial.print(frequency1);Serial.print(frequency3);Serial.print(frequency3);
+ R=R+frequency1;G=G+frequency2;B=B+frequency3; i++;
+ }Serial.print("R= ");Serial.print(R/i);Serial.print("G=  ");Serial.print(G/i);Serial.print("B=  ");Serial.println(B/i);
+
+ R = R / i;
+ G = G / i;
+ B = B / i;
+}
+
+void GrabberClose()
+{
+  digitalWrite(motorPin4,LOW);
+  digitalWrite(motorPin3,HIGH);delay(2000);
+  digitalWrite(motorPin3,LOW);
+  digitalWrite(motorPin4,LOW);
+}
+
+void GrabberOpen()
+{
+  digitalWrite(motorPin4,HIGH);
+  digitalWrite(motorPin3,LOW);delay(2000);
+  digitalWrite(motorPin3,LOW);
+  digitalWrite(motorPin4,LOW);
+}
+
 void pos1(){
   //This code will turn BASE counter-clockwise  to Pos 1
     digitalWrite(motorPin1, LOW);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
@@ -220,4 +310,3 @@ void armdown(){
 digitalWrite(motorPin6,HIGH);Serial.println(digitalRead(motorPin6));digitalWrite(motorPin5,LOW);Serial.println(digitalRead(motorPin5));delay(50);
  digitalWrite(motorPin6,LOW);Serial.println(digitalRead(motorPin6));digitalWrite(motorPin5,LOW);Serial.println(digitalRead(motorPin5)); delay(50);   
 }
-
