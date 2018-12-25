@@ -1,7 +1,4 @@
- /*     Arduino Color Sensing Tutorial
- *      
- *  by Dejan Nedelkovski, www.HowToMechatronics.com
- *  
+ /*   Borrowed code from innumerable authors on the web
  */
  
 #define S0 4
