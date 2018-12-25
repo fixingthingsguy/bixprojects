@@ -77,13 +77,18 @@ void MeasureRGB();
 
 void Calibrate()
 {
-  GrabberClose();
-  GrabberOpen();
-  GrabberClose();
-  GrabberOpen();
-  GrabberClose();
+  Serial.println("Begin calibration");
   
-  TimedCCW(1000);
+  armdown();
+  armup();
+  
+  GrabberClose();
+  GrabberOpen();
+  GrabberClose();
+  GrabberOpen();
+  GrabberClose();
+
+    TimedCCW(1000);
   int done = 0;
   while(!done)
   {
@@ -92,9 +97,10 @@ void Calibrate()
     {
       break;
     }
-
-    TimedCCW(10);
+    TimedCW(50);
   }
+
+  Serial.println("End calibration");
 }
 
 
@@ -153,12 +159,14 @@ void StartCW()
 {
   digitalWrite(motorPin1, HIGH);
   digitalWrite(motorPin2, LOW);
+  Serial.println("CW");
 }
 
 void Stop()
 {
   digitalWrite(motorPin1, LOW);
   digitalWrite(motorPin2, LOW);
+  Serial.println("STOP");
 }
 
 void TimedCCW(int z)
@@ -272,7 +280,7 @@ frequency1 = map(frequency1,104,119,255,0);
  // Serial.print("R= ");//printing name
  // Serial.print(frequency1);//printing RED color frequency
  // Serial.print("  ");
-  delay(100);
+  delay(10);
 
   // Setting Green filtered photodiodes to be read
 digitalWrite(S2,HIGH);
@@ -285,7 +293,7 @@ digitalWrite(S2,HIGH);
   //Serial.print("G= ");//printing name
   //Serial.print(frequency2);//printing RED color frequency
   //Serial.print("  ");
-  delay(100);
+  delay(10);
  
   // Setting Blue filtered photodiodes to be read
   digitalWrite(S2,HIGH);  //was S2 LOW, S3 HIGH
@@ -299,7 +307,7 @@ digitalWrite(S2,HIGH);
   //Serial.print(frequency3);//printing RED color frequency
   
   //Serial.println("  ");
-  delay(100);
+  delay(10);
 }
 void armup(){
    delay(500); Serial.print("Dipper Position"); //Serial.println(analogRead(A2));
