@@ -1,7 +1,7 @@
  /*     Arduino Color Sensing Tutorial
  *      
  *  by Dejan Nedelkovski, www.HowToMechatronics.com
- *  
+ *  Modified by current user extensively
  */
  
 #define S0 4
@@ -220,4 +220,3 @@ void armdown(){
 digitalWrite(motorPin6,HIGH);Serial.println(digitalRead(motorPin6));digitalWrite(motorPin5,LOW);Serial.println(digitalRead(motorPin5));delay(50);
  digitalWrite(motorPin6,LOW);Serial.println(digitalRead(motorPin6));digitalWrite(motorPin5,LOW);Serial.println(digitalRead(motorPin5)); delay(50);   
 }
-
