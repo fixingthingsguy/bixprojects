@@ -43,14 +43,8 @@ char *ColorToString(Color c)
   return ("Unknown");
 }
 
-struct DataPoint
-{
-  Color color;
-  int sample;
-  long R, G, B, W;
-};
-
-const DataPoint data  [] = {
+const PROGMEM long data  [][6] = {
+/*  Color, SampleNumber, R, G, B, W   */
   { Blue, 0, 16025, 24271, 53763, 94339 },
   { Blue, 0, 17361, 26315, 58823, 102040 },
   { Blue, 0, 17482, 26737, 60240, 104166 },
@@ -117,6 +111,27 @@ const DataPoint data  [] = {
   { Yellow, 3, 100000, 75757, 74626, 250000 },
 };
 
+// Reads data from the data[] array.  Requires usage of the
+// special functions to read from flash memory - normal C memory
+// accesses do not work properly.
+#define DATA_FIELD_COLOR 0
+#define DATA_FIELD_SAMPLE 1
+#define DATA_FIELD_R 2
+#define DATA_FIELD_G 3
+#define DATA_FIELD_B 4
+#define DATA_FIELD_W 5
+long ReadFlashData(int row, int field)
+{
+  long addr = (long)pgm_get_far_address(data);
+  addr += field * sizeof(long);
+  addr += sizeof(data[0])*row;
+    
+  long tmp;
+  memcpy_PF(&tmp, addr, sizeof(long));
+
+  return tmp;
+}
+
 
 void setup() {
   pinMode(S0, OUTPUT);
@@ -161,25 +176,6 @@ void setup() {
   lcd.setCursor(0, 0); 
   lcd.print("Initialized");
   delay(500);
-
-  for(int i = 0; i < sizeof(data) / sizeof(data[0]); ++i)
-  {
-    Serial.print(i);
-    Serial.print(": ");
-    Serial.print(data[i].color);
-    Serial.print(", ");
-    Serial.print(data[i].sample);
-    Serial.print(", R=");
-    Serial.print(data[i].R);
-    Serial.print(", G=");
-    Serial.print(data[i].G);
-    Serial.print(", B=");
-    Serial.print(data[i].B);
-    Serial.print(", W=");
-    Serial.println(data[i].W);
-    
-  }
-  
 }
 
 const int RED=1;
@@ -235,13 +231,13 @@ Color GetBestColor(long R, long G, long B, long W)
 
   for (int i = 0; i < sizeof(data) / sizeof(data[0]); ++i)
   {
-    if (i > 0 && data[i].sample != data[i - 1].sample)
+    if (i > 0 && ReadFlashData(i, DATA_FIELD_SAMPLE) != ReadFlashData(i-1, DATA_FIELD_SAMPLE))
     {
-      //printf("Color %d, sample %d, val = %0.2f\n", data[i - 1].color, data[i-1].sample, curr);
+      //printf("Color %d, sample %d, val = %0.2f\n", data[i - 1][0], data[i-1][1], curr);
       if (curr < bestVal)
       {
         bestVal = curr;
-        best = data[i - 1].color;
+        best = ReadFlashData(i - 1, DATA_FIELD_COLOR);
         //printf("New best: color %d [val = %0.2f]\n", best, bestVal);
         //Serial.print("New best: color ");
         //Serial.print(best);
@@ -258,10 +254,10 @@ Color GetBestColor(long R, long G, long B, long W)
   Serial.println(R - data[i].R);
  */
     
-    float distSquared = pow(R - data[i].R, 2) 
-      + pow(G - data[i].G, 2)
-      + pow(B - data[i].B, 2) 
-      + pow(W - data[i].W, 2);
+    float distSquared = pow(R - ReadFlashData(i, DATA_FIELD_R), 2) 
+      + pow(G - ReadFlashData(i, DATA_FIELD_G), 2)
+      + pow(B - ReadFlashData(i, DATA_FIELD_B), 2) 
+      + pow(W - ReadFlashData(i, DATA_FIELD_W), 2);
 
       //Serial.println(distSquared);
 
@@ -318,36 +314,5 @@ void loop()
   delay(300);
   
 }
-void test()
-{
-  if (show == 0) {
-    lcd.setBacklight(255);
-    lcd.home(); lcd.clear();
-    lcd.print("Hello LCD");
-    lcd.clear();
-    lcd.setCursor(0, 0); lcd.print("R=");lcd.print(frequency1);
-    
-    lcd.setCursor(5, 0);lcd.print("G=");lcd.print(frequency2);
-    lcd.setCursor(11, 0);lcd.print("B=");lcd.print(frequency3);
-     lcd.setCursor(0, 1);
-     if((frequency1>frequency2) && (frequency1>frequency3) ){lcd.print("Color=Red"); 
-     }
-    
-     else {
-     if((frequency2>frequency1) && (frequency2>frequency3) ){lcd.print("Color=Green"); 
-  } 
-    }
-
-     if((frequency3>frequency1) && (frequency3>frequency2)) {lcd.print("Color=Blue"); 
-    } 
- 
-  
-    delay(1000);
-
-    
-
-  } 
-}
- 
 
   
