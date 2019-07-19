@@ -9,11 +9,11 @@
 
 LiquidCrystal_PCF8574 lcd(0x3F);  // set the LCD address to 0x27 or as appropriate for a 16 chars and 2 line display
 int show;
-#define S0 3
-#define S1 5
-#define S2 6
-#define S3 10
-#define sensorOut 9
+#define S0 3  //was 3
+#define S1 5  //was 5
+#define S2 6  //was 5
+#define S3 10//was 10
+#define sensorOut 9 //waas 9
 
 int frequency1,frequency2,frequency3 = 0;
 int duration = 0;
@@ -25,7 +25,7 @@ enum Color
   Green = 2,
   Purple = 3,
   Orange = 4,
-  Yellow = 5
+  Yellow = 5 
 };
 
 char *ColorToString(Color c)
@@ -155,7 +155,7 @@ void setup() {
   Serial.println("Dose: check for LCD");
 
   // See http://playground.arduino.cc/Main/I2cScanner
-  Wire.begin();
+/*  Wire.begin();
   Wire.beginTransmission(0x3F);
   error = Wire.endTransmission();
   Serial.print("I2C result: ");
@@ -174,7 +174,7 @@ void setup() {
   lcd.clear();
   lcd.home();
   lcd.setCursor(0, 0); 
-  lcd.print("Initialized");
+  lcd.print("Initialized");*/
   delay(500);
 }
 
@@ -274,7 +274,10 @@ Color GetBestColor(long R, long G, long B, long W)
 
 void loop() 
 {
-  long R = ReadPeriod(RED);
+  color(); Serial.println("HELLO WORLD");delay(1000);
+}
+void color(){
+long R = ReadPeriod(RED);
   long G = ReadPeriod(GREEN);
   long B = ReadPeriod(BLUE);
   long W = ReadPeriod(WHITE);
@@ -304,12 +307,12 @@ void loop()
   Serial.println(best);
   Serial.println(ColorToString(best));
   
-
+/*
   lcd.clear();
   lcd.print("Best match:");
   lcd.setCursor(0, 1);
   lcd.print(ColorToString(best));
-  
+  */
 
   delay(300);
   
